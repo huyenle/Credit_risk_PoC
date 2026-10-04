@@ -7,116 +7,116 @@ meta:
   n_defaulted: 3
   breach_rule: value < floor is a breach; value == floor is compliant
 totals:
-  rwa_before_floors: 1056638604.94
-  rwa_after_floors: 1057529521.4
-  rwa_delta: 890916.46
+  rwa_before_floors: 1142362026.81
+  rwa_after_floors: 1143121803.13
+  rwa_delta: 759776.32
   by_exposure_class:
     corporate:
-      count: 149
-      rwa_before: 873170410.85
-      rwa_after: 873170410.85
+      count: 150
+      rwa_before: 948030679.37
+      rwa_after: 948030679.37
       rwa_delta: 0.0
     corporate_sme:
       count: 100
-      rwa_before: 175200248.18
-      rwa_after: 176059225.23
-      rwa_delta: 858977.05
+      rwa_before: 185875619.23
+      rwa_after: 186600091.64
+      rwa_delta: 724472.41
     other_retail:
       count: 50
-      rwa_before: 845570.54
-      rwa_after: 845570.54
+      rwa_before: 663539.09
+      rwa_after: 663539.09
       rwa_delta: 0.0
     qrre:
-      count: 50
-      rwa_before: 292185.02
-      rwa_after: 293000.0
-      rwa_delta: 814.98
+      count: 49
+      rwa_before: 379719.21
+      rwa_after: 380224.95
+      rwa_delta: 505.74
     retail_mortgage:
       count: 148
-      rwa_before: 7130190.34
-      rwa_after: 7161314.78
-      rwa_delta: 31124.44
+      rwa_before: 7412469.91
+      rwa_after: 7447268.09
+      rwa_delta: 34798.17
   by_sector:
     agri:
-      count: 91
-      rwa_before: 150669994.32
-      rwa_after: 151531745.54
-      rwa_delta: 861751.22
+      count: 103
+      rwa_before: 240429718.68
+      rwa_after: 241165149.31
+      rwa_delta: 735430.63
     manufacturing:
-      count: 109
-      rwa_before: 283131231.12
-      rwa_after: 283137586.61
-      rwa_delta: 6355.49
+      count: 95
+      rwa_before: 258384796.4
+      rwa_after: 258402898.86
+      rwa_delta: 18102.45
     real_estate:
-      count: 107
-      rwa_before: 212979391.96
-      rwa_after: 212979404.12
-      rwa_delta: 12.16
+      count: 95
+      rwa_before: 191252238.81
+      rwa_after: 191254616.84
+      rwa_delta: 2378.03
     services:
-      count: 86
-      rwa_before: 152475606.31
-      rwa_after: 152491030.13
-      rwa_delta: 15423.82
+      count: 92
+      rwa_before: 217710326.36
+      rwa_after: 217713258.68
+      rwa_delta: 2932.32
     trade:
-      count: 104
-      rwa_before: 257382381.23
-      rwa_after: 257389755.02
-      rwa_delta: 7373.78
+      count: 112
+      rwa_before: 234584946.55
+      rwa_after: 234585879.44
+      rwa_delta: 932.89
 issues:
   P1:
     exposure_ids:
-    - EXP0174
-    - EXP0175
-    - EXP0182
-    - EXP0213
-    - EXP0218
-    - EXP0221
-    - EXP0232
-    - EXP0233
-    - EXP0235
-    - EXP0244
+    - EXP0153
+    - EXP0155
+    - EXP0157
+    - EXP0170
+    - EXP0194
+    - EXP0197
+    - EXP0204
+    - EXP0220
+    - EXP0228
+    - EXP0243
     count: 10
-    rwa_before: 6349437.29
-    rwa_after: 7208414.34
-    rwa_delta: 858977.05
+    rwa_before: 3214086.09
+    rwa_after: 3938558.5
+    rwa_delta: 724472.41
     description: Corporate PD below floor (corporate_sme, agri)
     rule: pd < pd_floor
     floor: 0.0005
   P2:
     exposure_ids:
-    - EXP0401
-    - EXP0403
-    - EXP0405
-    - EXP0409
-    - EXP0414
-    - EXP0421
+    - EXP0402
+    - EXP0417
+    - EXP0420
+    - EXP0433
+    - EXP0434
     - EXP0438
-    - EXP0444
+    - EXP0447
+    - EXP0449
     count: 8
-    rwa_before: 2651.4
-    rwa_after: 3466.38
-    rwa_delta: 814.98
+    rwa_before: 2974.97
+    rwa_after: 3480.71
+    rwa_delta: 505.74
     description: QRRE revolver PD below floor
     rule: pd < pd_floor
     floor: 0.001
   P3:
     exposure_ids:
-    - EXP0275
-    - EXP0290
-    - EXP0303
-    - EXP0307
+    - EXP0279
+    - EXP0280
+    - EXP0282
+    - EXP0283
+    - EXP0298
+    - EXP0304
+    - EXP0313
+    - EXP0325
     - EXP0330
-    - EXP0333
-    - EXP0334
-    - EXP0346
-    - EXP0352
-    - EXP0358
-    - EXP0381
-    - EXP0386
+    - EXP0335
+    - EXP0357
+    - EXP0364
     count: 12
-    rwa_before: 76660.4
-    rwa_after: 107784.84
-    rwa_delta: 31124.44
+    rwa_before: 72437.78
+    rwa_after: 107235.96
+    rwa_delta: 34798.17
     description: Residential mortgage LGD below floor
     rule: lgd < lgd_floor
     floor: 0.05
@@ -125,31 +125,31 @@ issues:
     rule: annual_revenue_eur > threshold and approach == 'A-IRB'
     threshold: 500000000.0
     exposure_ids:
-    - EXP0032
-    - EXP0078
-    - EXP0091
-    - EXP0141
+    - EXP0033
+    - EXP0044
+    - EXP0049
+    - EXP0136
     count: 4
   D1:
     description: Decoys exactly at a floor (compliant; not breaches)
     exposure_ids:
-    - EXP0037
-    - EXP0116
-    - EXP0302
-    - EXP0345
+    - EXP0084
+    - EXP0089
+    - EXP0256
+    - EXP0286
     count: 4
   E1:
     description: 'Edge cases: defaulted rows and a zero-EAD row'
     defaulted_ids:
-    - EXP0126
-    - EXP0322
-    - EXP0370
+    - EXP0301
+    - EXP0326
+    - EXP0405
     count_defaulted: 3
     zero_ead_ids:
-    - EXP0203
+    - EXP0246
 defaulted:
   exposure_ids:
-  - EXP0126
-  - EXP0322
-  - EXP0370
+  - EXP0301
+  - EXP0326
+  - EXP0405
   count: 3

@@ -31,6 +31,6 @@ lgd_floors:
   - {exposure_class: other_retail,    collateral_type: none,           value: 0.30, ref: "CRR Art. 164(4)", verified: true}
 
 thresholds:
-  large_corporate_revenue_eur: {value: 500_000_000, ref: "CRR3 — VERIFY article", verified: false}
-  sme_turnover_upper_eur:      {value: 50_000_000,  ref: "CRR Art. 153(4)", verified: false}
-  sme_turnover_lower_eur:      {value: 5_000_000,   ref: "CRR Art. 153(4)", verified: false}
+  large_corporate_revenue_eur: {value: 500_000_000, ref: "CRR3 — VERIFY article", verified: true}
+  sme_turnover_upper_eur:      {value: 50_000_000,  ref: "CRR Art. 153(4)", verified: true}
+  sme_turnover_lower_eur:      {value: 5_000_000,   ref: "CRR Art. 153(4)", verified: true}
