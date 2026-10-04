@@ -69,6 +69,21 @@ def test_qrre_type_only_on_qrre(df):
     assert df[df["exposure_class"] == "qrre"]["qrre_type"].notna().all()
 
 
+def test_all_rows_are_airb(df):
+    assert (df["approach"] == "A-IRB").all()
+
+
+def test_no_bunching_at_floor_buffer_bound(df, rules):
+    """Baselines are redrawn, not clipped: no value sits exactly on the buffer."""
+    for row in df.to_dict("records"):
+        pf = applicable_pd_floor(row, rules)
+        if pf is not None:
+            assert row["pd"] != pf * gen.PD_BASELINE_FLOOR_MULT
+        lf = applicable_lgd_floor(row, rules)
+        if lf is not None:
+            assert row["lgd"] != lf * gen.LGD_BASELINE_FLOOR_MULT
+
+
 def test_rwa_after_floors_ge_before_for_performing(df, rules):
     for row in df.to_dict("records"):
         if int(row["default_flag"]) == 1:

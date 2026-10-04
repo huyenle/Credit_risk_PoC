@@ -16,7 +16,7 @@
   amounts are in **EUR**.
 - Regulatory floors/thresholds are read only from `data/floors.yaml`; they are
   never hard-coded in the generator or the ground-truth script. Baseline
-  lower-clips and planted breach ranges are expressed as fractions of those
+  floor buffers and planted breach ranges are expressed as fractions of those
   registry values.
 
 ## Schema (`portfolio.csv`)
@@ -25,7 +25,7 @@
 |---|---|---|---|
 | `exposure_id` | str | — | `EXP0001` … `EXP0500` |
 | `exposure_class` | str | — | `corporate`, `corporate_sme`, `retail_mortgage`, `qrre`, `other_retail` |
-| `approach` | str | — | `A-IRB` or `F-IRB` (retail always `A-IRB`) |
+| `approach` | str | — | always `A-IRB` (all exposures use the Advanced IRB approach) |
 | `annual_revenue_eur` | float | EUR | corporates only; blank for retail |
 | `sector` | str | — | `agri`, `real_estate`, `manufacturing`, `services`, `trade` |
 | `pd` | float | decimal | model PD **before** floors |
@@ -49,12 +49,14 @@
 
 ## Baseline distributions
 
-- **PD** — log-normal per class, clipped to `(floor·3, 0.3)` so baseline rows
-  never breach a floor. Median PD by class: retail_mortgage 0.006, corporate
-  0.012, corporate_sme 0.018, other_retail 0.03, qrre 0.04.
-- **LGD** — beta per collateral/class (concentration 12), clipped above the
-  applicable floor. Means: residential mortgage 0.20, corporate collateral
-  0.25–0.45, other retail 0.45, QRRE (unsecured) 0.65.
+- **PD** — log-normal per class, **redrawn** (not clipped) until it lands in
+  `(floor·3, 0.3)` so baseline rows never breach a floor and no values bunch on
+  the bound. Median PD by class: retail_mortgage 0.006, corporate 0.012,
+  corporate_sme 0.018, other_retail 0.03, qrre 0.04.
+- **LGD** — beta per collateral/class (concentration 12). Where a floor applies,
+  the draw is **redrawn** until it exceeds `floor·1.15` (again, no clipping, no
+  bunching); otherwise a single draw capped at 1.0. Means: residential mortgage
+  0.20, corporate collateral 0.25–0.45, other retail 0.45, QRRE (unsecured) 0.65.
 - **EAD** — log-normal. Median by class: corporate €5m, corporate_sme €1.5m,
   retail_mortgage €200k, other_retail €15k, qrre €8k.
 - **maturity_years** — uniform 1–5 for corporates; blank for retail.

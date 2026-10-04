@@ -97,6 +97,28 @@ def _beta_ab(mean: float, k: float) -> tuple:
     return mean * k, (1 - mean) * k
 
 
+def _draw_in_range(
+    rng: np.random.Generator,
+    draw_fn,
+    lower: float,
+    upper: float,
+    max_tries: int = 10_000,
+) -> float:
+    """Draw from ``draw_fn`` until the sample lands in ``[lower, upper]``.
+
+    Replaces clipping: rejected draws are re-drawn rather than snapped to the
+    bound, so no values bunch at ``lower`` or ``upper``. Deterministic given the
+    rng state. Raises if the region is effectively unreachable.
+    """
+    for _ in range(max_tries):
+        x = float(draw_fn())
+        if lower <= x <= upper:
+            return x
+    raise RuntimeError(
+        f"could not draw a value in [{lower}, {upper}] after {max_tries} tries"
+    )
+
+
 def _lgd_mean(exposure_class: str, collateral: str) -> float:
     if exposure_class in LGD_MEAN_RETAIL:
         return LGD_MEAN_RETAIL[exposure_class]
@@ -154,27 +176,37 @@ def _baseline_row(exposure_class: str, rng: np.random.Generator, rules: Rules) -
 
     row = {
         "exposure_class": exposure_class,
-        "approach": rng.choice(["A-IRB", "F-IRB"]) if is_corporate else "A-IRB",
+        "approach": "A-IRB",
         "sector": rng.choice(SECTORS),
         "collateral_type": collateral,
         "qrre_type": qrre_type,
         "default_flag": 0,
     }
 
-    # PD: log-normal, clipped above the applicable floor and below the cap.
+    # PD: log-normal, redrawn to sit above the floor buffer and below the cap.
     median, sigma = PD_PARAMS[exposure_class]
-    pd_draw = float(np.exp(rng.normal(np.log(median), sigma)))
     pd_floor = applicable_pd_floor(row, rules) or 0.0
-    row["pd"] = min(max(pd_draw, pd_floor * PD_BASELINE_FLOOR_MULT), PD_UPPER_CLIP)
+    row["pd"] = _draw_in_range(
+        rng,
+        lambda: np.exp(rng.normal(np.log(median), sigma)),
+        lower=pd_floor * PD_BASELINE_FLOOR_MULT,
+        upper=PD_UPPER_CLIP,
+    )
 
-    # LGD: beta, clipped above the applicable floor (if any).
+    # LGD: beta. Where a floor applies, redraw above the floor buffer rather
+    # than clip; otherwise a single draw (capped at 1.0).
     mean = _lgd_mean(exposure_class, collateral)
     a, b = _beta_ab(mean, LGD_CONCENTRATION)
-    lgd_draw = float(rng.beta(a, b))
     lgd_floor = applicable_lgd_floor(row, rules)
     if lgd_floor is not None:
-        lgd_draw = max(lgd_draw, lgd_floor * LGD_BASELINE_FLOOR_MULT)
-    row["lgd"] = min(lgd_draw, 1.0)
+        row["lgd"] = _draw_in_range(
+            rng,
+            lambda: rng.beta(a, b),
+            lower=lgd_floor * LGD_BASELINE_FLOOR_MULT,
+            upper=1.0,
+        )
+    else:
+        row["lgd"] = min(float(rng.beta(a, b)), 1.0)
 
     # EAD: log-normal.
     ead_median, ead_sigma = EAD_PARAMS[exposure_class]
