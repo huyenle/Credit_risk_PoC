@@ -78,8 +78,17 @@ def test_correlation_bounds():
     assert vasicek.qrre_correlation(0.05) == 0.04
 
 
-def test_unverified_value_warns():
-    rules = Rules()
+def test_unverified_value_warns(tmp_path):
+    # The warning mechanism must fire for any entry still marked
+    # `verified: false`, independent of the production floors.yaml (which may be
+    # fully verified). Use a throwaway registry so the test does not depend on
+    # the human-maintained flags.
+    floors = tmp_path / "floors.yaml"
+    floors.write_text(
+        "pd_floors:\n"
+        "  - {exposure_class: corporate, value: 0.0005, ref: test, verified: false}\n"
+    )
+    rules = Rules(path=floors)
     with pytest.warns(UserWarning):
         rules.pd_floor("corporate")
 

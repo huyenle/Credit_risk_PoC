@@ -120,8 +120,10 @@ def test_per_issue_rwa_after_ge_before(gt):
     for issue in ("P1", "P2", "P3"):
         block = gt["issues"][issue]
         assert block["rwa_after"] >= block["rwa_before"]
+        # rwa_before/after/delta are each rounded to 2dp independently, so the
+        # recomputed difference can drift by up to one cent in each direction.
         assert block["rwa_delta"] == pytest.approx(
-            block["rwa_after"] - block["rwa_before"], abs=0.01
+            block["rwa_after"] - block["rwa_before"], abs=0.02
         )
 
 
