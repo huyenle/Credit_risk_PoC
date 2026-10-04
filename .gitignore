@@ -10,6 +10,9 @@ venv/
 # Local Claude Code settings
 .claude/settings.local.json
 
+# Local review notes (not for commit)
+REVIEW_NOTES.md
+
 # Tooling
 .pytest_cache/
 .ruff_cache/
