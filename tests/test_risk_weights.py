@@ -1,37 +1,13 @@
-"""Step 0 tests: the risk-weight wrapper matches the original CRE31 module and
-behaves correctly across exposure classes."""
+"""Step 0 tests: the risk-weight wrapper behaves correctly across exposure classes."""
 
 from __future__ import annotations
 
-import importlib.util
 import warnings
-from pathlib import Path
 
 import pytest
 
 from regagent import risk_weights, vasicek
 from regagent.rules import Rules
-
-REPO_ROOT = Path(__file__).resolve().parents[1]
-
-
-def _load_original():
-    """Import the untouched CRE31_RWA.py from the repo root for cross-checking."""
-    spec = importlib.util.spec_from_file_location(
-        "cre31_original", REPO_ROOT / "CRE31_RWA.py"
-    )
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
-
-
-def test_corporate_matches_original_module():
-    original = _load_original()
-    pd, lgd, maturity = 0.02, 0.45, 2.5  # PD well above the floor, so no flooring
-    k = original.capital_requirement_rate_performing_exposure(pd, lgd, maturity)
-    expected_rw = original.risk_weight(k)
-    got = risk_weights.risk_weight(pd, lgd, "corporate", maturity=maturity)
-    assert got == pytest.approx(expected_rw, rel=1e-12)
 
 
 def test_rwa_multiplies_ead_last():

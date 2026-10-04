@@ -20,7 +20,7 @@ Step 1 of the build — the **synthetic IRB portfolio and ground truth**:
 
 | path | purpose |
 |---|---|
-| `src/regagent/vasicek.py` | IRB (Vasicek) risk-weight formula core (from `CRE31_RWA.py`) |
+| `src/regagent/vasicek.py` | IRB (Vasicek) risk-weight formula core (Basel CRE31) |
 | `src/regagent/risk_weights.py` | wrapper: `risk_weight(...)` / `rwa(row)`, dispatched by exposure class |
 | `src/regagent/rules.py` | loads `floors.yaml`; per-row floor/threshold lookups |
 | `data/floors.yaml` | rule registry (human-maintained; the only source of regulatory numbers) |

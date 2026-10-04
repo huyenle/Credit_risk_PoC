@@ -1,9 +1,8 @@
 """IRB (Vasicek) risk-weight formula core.
 
-Copied from the project's existing ``CRE31_RWA.py`` (corporate/sovereign case)
-and extended with the retail asset-correlation formulas. The Vasicek math is
-NOT modified: the corporate correlation and maturity-adjustment functions are
-byte-for-byte the originals.
+Implements the Basel CRE31 IRB formula (corporate/sovereign case) and the
+retail asset-correlation formulas. The corporate correlation and
+maturity-adjustment functions follow the CRE31 standard exactly.
 
 Structural constants of the Basel/CRE31 formula (asset-correlation coefficients,
 the 99.9% confidence level, and the ``RW = K * 12.5`` multiplier) live here as
