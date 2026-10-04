@@ -80,6 +80,7 @@ N_P1 = 10  # corporate_sme PD below floor, all in agri
 N_P2 = 8  # qrre revolver PD below floor
 N_P3 = 12  # residential mortgage LGD below floor
 N_P4 = 4  # large corporate on A-IRB (scope breach)
+N_P5 = 6  # unsecured corporate LGD below floor (spread across sectors)
 N_D1_PD = 2  # decoys exactly at PD floor
 N_D1_LGD = 2  # decoys exactly at LGD floor
 N_E1_DEFAULT = 3  # defaulted rows (PD = 1.0)
@@ -91,6 +92,7 @@ P1_PD_FRAC = (0.6, 0.98)
 P2_PD_FRAC = (0.6, 0.95)
 P3_LGD_FRAC = (0.4, 0.9)
 P4_REVENUE_FRAC = (1.05, 1.5)  # multiples of the large-corporate threshold
+P5_LGD_FRAC = (0.6, 0.95)
 
 
 def _beta_ab(mean: float, k: float) -> tuple:
@@ -250,6 +252,9 @@ def _plant_issues(df: pd.DataFrame, rng: np.random.Generator, rules: Rules) -> N
     sme = idx("corporate_sme")
     mort = idx("retail_mortgage")
     revolvers = list(df.index[(df["exposure_class"] == "qrre") & (df["qrre_type"] == "revolver")])
+    corp_unsecured = list(
+        df.index[(df["exposure_class"] == "corporate") & (df["collateral_type"] == "none")]
+    )
 
     # P4: large corporate revenue over the threshold, still on A-IRB.
     threshold = rules.threshold("large_corporate_revenue_eur")
@@ -273,6 +278,13 @@ def _plant_issues(df: pd.DataFrame, rng: np.random.Generator, rules: Rules) -> N
     mort_floor = rules.lgd_floor("retail_mortgage", "residential_re")
     for i in _pick(rng, mort, N_P3, used):
         df.at[i, "lgd"] = float(mort_floor * rng.uniform(*P3_LGD_FRAC))
+
+    # P5: 6 unsecured corporates (collateral none, revenue below the large-
+    # corporate threshold) with LGD below the corporate unsecured floor. Picked
+    # from across sectors; revenue stays sub-threshold because P4 rows are used.
+    corp_none_floor = rules.lgd_floor("corporate", "none")
+    for i in _pick(rng, corp_unsecured, N_P5, used):
+        df.at[i, "lgd"] = float(corp_none_floor * rng.uniform(*P5_LGD_FRAC))
 
     # D1: decoys exactly at the floor (compliant; must NOT be flagged).
     corp_floor = rules.pd_floor("corporate")

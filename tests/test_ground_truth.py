@@ -64,11 +64,25 @@ def test_p4_scope_breaches_are_real(gt, rows, rules):
         assert float(row["annual_revenue_eur"]) > threshold
 
 
+def test_p5_lgd_breaches_are_real(gt, rows, rules):
+    threshold = rules.threshold("large_corporate_revenue_eur")
+    ids = gt["issues"]["P5"]["exposure_ids"]
+    assert ids
+    for eid in ids:
+        row = rows[eid]
+        assert row["exposure_class"] == "corporate"
+        assert row["collateral_type"] == "none"
+        assert float(row["annual_revenue_eur"]) <= threshold
+        floor = applicable_lgd_floor(row, rules)
+        assert floor is not None
+        assert row["lgd"] < floor
+
+
 def test_decoys_are_not_flagged_as_breaches(gt):
     decoys = set(gt["issues"]["D1"]["exposure_ids"])
     assert decoys
     breach_ids = set()
-    for issue in ("P1", "P2", "P3"):
+    for issue in ("P1", "P2", "P3", "P5"):
         breach_ids.update(gt["issues"][issue]["exposure_ids"])
     assert decoys.isdisjoint(breach_ids)
 
@@ -84,9 +98,9 @@ def test_decoys_sit_exactly_at_a_floor(gt, rows, rules):
 
 
 def test_no_breaches_outside_planted_issues(gt, rows, rules):
-    """Every actual floor breach must be accounted for by P1/P2/P3."""
+    """Every actual floor breach must be accounted for by P1/P2/P3/P5."""
     planted = set()
-    for issue in ("P1", "P2", "P3"):
+    for issue in ("P1", "P2", "P3", "P5"):
         planted.update(gt["issues"][issue]["exposure_ids"])
 
     actual = set()
@@ -111,13 +125,13 @@ def test_defaulted_excluded_and_listed(gt, rows):
         assert int(rows[eid]["default_flag"]) == 1
     # Defaulted rows must not appear in any floor-breach issue.
     breach_ids = set()
-    for issue in ("P1", "P2", "P3"):
+    for issue in ("P1", "P2", "P3", "P5"):
         breach_ids.update(gt["issues"][issue]["exposure_ids"])
     assert set(defaulted).isdisjoint(breach_ids)
 
 
 def test_per_issue_rwa_after_ge_before(gt):
-    for issue in ("P1", "P2", "P3"):
+    for issue in ("P1", "P2", "P3", "P5"):
         block = gt["issues"][issue]
         assert block["rwa_after"] >= block["rwa_before"]
         # rwa_before/after/delta are each rounded to 2dp independently, so the

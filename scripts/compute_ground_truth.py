@@ -83,6 +83,11 @@ def compute(rules: Rules) -> dict:
     p1 = [r for r in pd_breaches if r["exposure_class"] in ("corporate", "corporate_sme")]
     p2 = [r for r in pd_breaches if r["exposure_class"] == "qrre" and r.get("qrre_type") == "revolver"]
     p3 = [r for r in lgd_breaches if r["exposure_class"] == "retail_mortgage"]
+    p5 = [
+        r
+        for r in lgd_breaches
+        if r["exposure_class"] == "corporate" and r.get("collateral_type") == "none"
+    ]
 
     # P4: scope breach — large corporate over the threshold still on A-IRB.
     threshold = rules.threshold("large_corporate_revenue_eur")
@@ -133,6 +138,7 @@ def compute(rules: Rules) -> dict:
     pd_floor_corp = rules.pd_floor("corporate_sme")
     pd_floor_rev = rules.pd_floor("qrre", "revolver")
     lgd_floor_mort = rules.lgd_floor("retail_mortgage", "residential_re")
+    lgd_floor_corp_unsecured = rules.lgd_floor("corporate", "none")
 
     return {
         "meta": {
@@ -186,6 +192,15 @@ def compute(rules: Rules) -> dict:
                 "exposure_ids": sorted(r["exposure_id"] for r in p4),
                 "count": len(p4),
             },
+            "P5": _issue_block(
+                p5,
+                rules,
+                {
+                    "description": "Unsecured corporate LGD below floor (collateral none)",
+                    "rule": "lgd < lgd_floor",
+                    "floor": lgd_floor_corp_unsecured,
+                },
+            ),
             "D1": {
                 "description": "Decoys exactly at a floor (compliant; not breaches)",
                 "exposure_ids": sorted(r["exposure_id"] for r in decoys),

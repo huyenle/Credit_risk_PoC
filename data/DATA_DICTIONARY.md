@@ -76,6 +76,7 @@ and the registry (it does not read a planted-id manifest).
 | P2 | QRRE revolver PD below floor | QRRE revolvers, PD in `[floor·0.6, floor·0.95]` | 8 |
 | P3 | Mortgage LGD below floor | residential_re mortgages, LGD in `[floor·0.4, floor·0.9]` | 12 |
 | P4 | Scope breach | corporates with revenue `> large-corporate threshold` kept on `A-IRB` | 4 |
+| P5 | Unsecured corporate LGD below floor | `corporate` rows, collateral `none`, revenue below the large-corporate threshold, LGD in `[floor·0.6, floor·0.95]`, spread across sectors | 6 |
 | D1 | Decoys — exactly at floor | rows with PD or LGD set **equal** to the floor (compliant; must NOT be flagged) | 4 |
 | E1 | Edge cases | defaulted rows (PD = 1.0) plus one EAD = 0 row | 3 + 1 |
 

@@ -19,6 +19,13 @@ PORTFOLIO_CSV = REPO_ROOT / "data" / "portfolio.csv"
 
 RETAIL_CLASSES = {"retail_mortgage", "qrre", "other_retail"}
 
+# (exposure_class, collateral_type) pairs that intentionally carry NO LGD floor.
+# A pair appearing in the portfolio must either resolve to a floor in
+# floors.yaml or be listed here; otherwise the coverage test fails so a missing
+# floor is a deliberate decision, never a silent gap. Empty today — every
+# combination in the portfolio currently has a registered floor.
+LGD_FLOOR_NOT_REQUIRED: set[tuple[str, str]] = set()
+
 # Regulatory literals that must NOT appear in the data-generation code.
 FORBIDDEN_LITERALS = ["0.0005", "0.001", "0.05", "0.30", "0.50", "500000000"]
 GREP_FILES = [
@@ -71,6 +78,18 @@ def test_qrre_type_only_on_qrre(df):
 
 def test_all_rows_are_airb(df):
     assert (df["approach"] == "A-IRB").all()
+
+
+def test_every_collateral_combo_has_lgd_floor_or_is_listed(df, rules):
+    """Each (class, collateral) in the data has a floor or is listed as none."""
+    combos = set(zip(df["exposure_class"], df["collateral_type"]))
+    for exposure_class, collateral in combos:
+        has_floor = rules.lgd_floor(exposure_class, collateral) is not None
+        listed_none = (exposure_class, collateral) in LGD_FLOOR_NOT_REQUIRED
+        assert has_floor or listed_none, (
+            f"({exposure_class}, {collateral}) has no LGD floor in floors.yaml "
+            f"and is not listed in LGD_FLOOR_NOT_REQUIRED"
+        )
 
 
 def test_no_bunching_at_floor_buffer_bound(df, rules):

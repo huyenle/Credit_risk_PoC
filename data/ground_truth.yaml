@@ -7,19 +7,19 @@ meta:
   n_defaulted: 3
   breach_rule: value < floor is a breach; value == floor is compliant
 totals:
-  rwa_before_floors: 1142362026.81
-  rwa_after_floors: 1143121803.13
-  rwa_delta: 759776.32
+  rwa_before_floors: 1008782054.5
+  rwa_after_floors: 1022407777.56
+  rwa_delta: 13625723.06
   by_exposure_class:
     corporate:
-      count: 150
-      rwa_before: 948030679.37
-      rwa_after: 948030679.37
-      rwa_delta: 0.0
+      count: 149
+      rwa_before: 813835046.15
+      rwa_after: 826700992.89
+      rwa_delta: 12865946.74
     corporate_sme:
       count: 100
-      rwa_before: 185875619.23
-      rwa_after: 186600091.64
+      rwa_before: 186443809.61
+      rwa_after: 187168282.02
       rwa_delta: 724472.41
     other_retail:
       count: 50
@@ -27,41 +27,41 @@ totals:
       rwa_after: 663539.09
       rwa_delta: 0.0
     qrre:
-      count: 49
-      rwa_before: 379719.21
-      rwa_after: 380224.95
+      count: 50
+      rwa_before: 382136.41
+      rwa_after: 382642.15
       rwa_delta: 505.74
     retail_mortgage:
       count: 148
-      rwa_before: 7412469.91
-      rwa_after: 7447268.09
+      rwa_before: 7457523.24
+      rwa_after: 7492321.41
       rwa_delta: 34798.17
   by_sector:
     agri:
-      count: 103
-      rwa_before: 240429718.68
-      rwa_after: 241165149.31
-      rwa_delta: 735430.63
+      count: 104
+      rwa_before: 204497592.12
+      rwa_after: 209831538.16
+      rwa_delta: 5333946.05
     manufacturing:
       count: 95
-      rwa_before: 258384796.4
-      rwa_after: 258402898.86
-      rwa_delta: 18102.45
+      rwa_before: 256070614.27
+      rwa_after: 256736118.17
+      rwa_delta: 665503.89
     real_estate:
-      count: 95
-      rwa_before: 191252238.81
-      rwa_after: 191254616.84
-      rwa_delta: 2378.03
+      count: 93
+      rwa_before: 158816303.6
+      rwa_after: 159160889.9
+      rwa_delta: 344586.3
     services:
-      count: 92
-      rwa_before: 217710326.36
-      rwa_after: 217713258.68
-      rwa_delta: 2932.32
+      count: 93
+      rwa_before: 168824198.69
+      rwa_after: 172906651.83
+      rwa_delta: 4082453.14
     trade:
       count: 112
-      rwa_before: 234584946.55
-      rwa_after: 234585879.44
-      rwa_delta: 932.89
+      rwa_before: 220573345.82
+      rwa_after: 223772579.5
+      rwa_delta: 3199233.69
 issues:
   P1:
     exposure_ids:
@@ -130,26 +130,41 @@ issues:
     - EXP0049
     - EXP0136
     count: 4
+  P5:
+    exposure_ids:
+    - EXP0004
+    - EXP0013
+    - EXP0041
+    - EXP0078
+    - EXP0080
+    - EXP0143
+    count: 6
+    rwa_before: 37837914.58
+    rwa_after: 50703861.32
+    rwa_delta: 12865946.74
+    description: Unsecured corporate LGD below floor (collateral none)
+    rule: lgd < lgd_floor
+    floor: 0.25
   D1:
     description: Decoys exactly at a floor (compliant; not breaches)
     exposure_ids:
-    - EXP0084
-    - EXP0089
-    - EXP0256
-    - EXP0286
+    - EXP0056
+    - EXP0147
+    - EXP0303
+    - EXP0333
     count: 4
   E1:
     description: 'Edge cases: defaulted rows and a zero-EAD row'
     defaulted_ids:
-    - EXP0301
-    - EXP0326
-    - EXP0405
+    - EXP0133
+    - EXP0312
+    - EXP0378
     count_defaulted: 3
     zero_ead_ids:
-    - EXP0246
+    - EXP0114
 defaulted:
   exposure_ids:
-  - EXP0301
-  - EXP0326
-  - EXP0405
+  - EXP0133
+  - EXP0312
+  - EXP0378
   count: 3
