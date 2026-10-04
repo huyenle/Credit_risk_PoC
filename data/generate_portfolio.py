@@ -193,20 +193,17 @@ def _baseline_row(exposure_class: str, rng: np.random.Generator, rules: Rules) -
         upper=PD_UPPER_CLIP,
     )
 
-    # LGD: beta. Where a floor applies, redraw above the floor buffer rather
-    # than clip; otherwise a single draw (capped at 1.0).
+    # LGD: beta, redrawn to sit above the floor buffer (if a floor applies) and
+    # at or below 1.0. Mirrors the PD draw above.
     mean = _lgd_mean(exposure_class, collateral)
     a, b = _beta_ab(mean, LGD_CONCENTRATION)
-    lgd_floor = applicable_lgd_floor(row, rules)
-    if lgd_floor is not None:
-        row["lgd"] = _draw_in_range(
-            rng,
-            lambda: rng.beta(a, b),
-            lower=lgd_floor * LGD_BASELINE_FLOOR_MULT,
-            upper=1.0,
-        )
-    else:
-        row["lgd"] = min(float(rng.beta(a, b)), 1.0)
+    lgd_floor = applicable_lgd_floor(row, rules) or 0.0
+    row["lgd"] = _draw_in_range(
+        rng,
+        lambda: rng.beta(a, b),
+        lower=lgd_floor * LGD_BASELINE_FLOOR_MULT,
+        upper=1.0,
+    )
 
     # EAD: log-normal.
     ead_median, ead_sigma = EAD_PARAMS[exposure_class]
@@ -260,7 +257,6 @@ def _plant_issues(df: pd.DataFrame, rng: np.random.Generator, rules: Rules) -> N
         df.at[i, "annual_revenue_eur"] = float(
             threshold * rng.uniform(*P4_REVENUE_FRAC)
         )
-        df.at[i, "approach"] = "A-IRB"
 
     # P1: 10 corporate_sme in agri with PD below the corporate_sme floor.
     sme_floor = rules.pd_floor("corporate_sme")

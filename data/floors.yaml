@@ -8,20 +8,29 @@
 # All rates are decimals (0.0005 == 0.05%). Monetary thresholds are in EUR.
 
 pd_floors:
-  - {exposure_class: corporate,       value: 0.0005, ref: "CRR Art. 160(1)", verified: false}
-  - {exposure_class: corporate_sme,   value: 0.0005, ref: "CRR Art. 160(1)", verified: false}
-  - {exposure_class: retail_mortgage, value: 0.0005, ref: "CRR Art. 163(1)", verified: false}
-  - {exposure_class: other_retail,    value: 0.0005, ref: "CRR Art. 163(1)", verified: false}
-  - {exposure_class: qrre, qrre_type: transactor, value: 0.0005, ref: "CRR Art. 163(1)", verified: false}
-  - {exposure_class: qrre, qrre_type: revolver,   value: 0.0010, ref: "CRR Art. 163(1)", verified: false}
+  - {exposure_class: corporate,       value: 0.0005, ref: "CRR Art. 160(1)", verified: true}
+  - {exposure_class: corporate_sme,   value: 0.0005, ref: "CRR Art. 160(1)", verified: true}
+  - {exposure_class: retail_mortgage, value: 0.0005, ref: "CRR Art. 163(1)", verified: true}
+  - {exposure_class: other_retail,    value: 0.0005, ref: "CRR Art. 163(1)", verified: true}
+  - {exposure_class: qrre, qrre_type: transactor, value: 0.0005, ref: "CRR Art. 163(1)", verified: true}
+  - {exposure_class: qrre, qrre_type: revolver,   value: 0.0010, ref: "CRR Art. 163(1)", verified: true}
 
-lgd_floors:   # retail: Art. 164(4); corporate A-IRB: Art. 161(5) — FILL/VERIFY
-  - {exposure_class: retail_mortgage, collateral_type: residential_re, value: 0.05, ref: "CRR Art. 164(4)", verified: false}
-  - {exposure_class: qrre,            collateral_type: none,           value: 0.50, ref: "CRR Art. 164(4)", verified: false}
-  - {exposure_class: other_retail,    collateral_type: none,           value: 0.30, ref: "CRR Art. 164(4)", verified: false}
-  # corporate LGD floors: add after verification
+lgd_floors:  
+  - {exposure_class: corporate, collateral_type:  none ,value: 0.25, ref: "CRR Art. 161(5)", verified: true}
+  - {exposure_class: corporate_sme, collateral_type:  none ,value: 0.25, ref: "CRR Art. 161(5)", verified: true}
+  - {exposure_class: corporate, collateral_type:  financial ,value: 0, ref: "CRR Art. 161(5)", verified: true}
+  - {exposure_class: corporate_sme, collateral_type:  financial ,value: 0, ref: "CRR Art. 161(5)", verified: true}
+  - {exposure_class: corporate, collateral_type:  residential_re ,value: 0.1, ref: "CRR Art. 161(5)", verified: true}
+  - {exposure_class: corporate_sme, collateral_type:  residential_re ,value: 0.1, ref: "CRR Art. 161(5)", verified: true}
+  - {exposure_class: corporate, collateral_type:  commercial_re ,value: 0.1, ref: "CRR Art. 161(5)", verified: true}
+  - {exposure_class: corporate_sme, collateral_type:  commercial_re ,value: 0.1, ref: "CRR Art. 161(5)", verified: true}
+  - {exposure_class: corporate, collateral_type:  other_physical ,value: 0.15, ref: "CRR Art. 161(5)", verified: true}
+  - {exposure_class: corporate_sme, collateral_type:  other_physical ,value: 0.15, ref: "CRR Art. 161(5)", verified: true}
+  - {exposure_class: retail_mortgage, collateral_type: residential_re, value: 0.05, ref: "CRR Art. 164(4)", verified: true}
+  - {exposure_class: qrre,            collateral_type: none,           value: 0.50, ref: "CRR Art. 164(4)", verified: true}
+  - {exposure_class: other_retail,    collateral_type: none,           value: 0.30, ref: "CRR Art. 164(4)", verified: true}
 
 thresholds:
-  large_corporate_revenue_eur: {value: 500000000, ref: "CRR3 — VERIFY article", verified: false}
-  sme_turnover_upper_eur:      {value: 50000000,  ref: "CRR Art. 153(4)", verified: false}
-  sme_turnover_lower_eur:      {value: 5000000,   ref: "CRR Art. 153(4)", verified: false}
+  large_corporate_revenue_eur: {value: 500_000_000, ref: "CRR3 — VERIFY article", verified: false}
+  sme_turnover_upper_eur:      {value: 50_000_000,  ref: "CRR Art. 153(4)", verified: false}
+  sme_turnover_lower_eur:      {value: 5_000_000,   ref: "CRR Art. 153(4)", verified: false}
