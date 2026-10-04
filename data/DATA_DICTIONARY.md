@@ -3,7 +3,7 @@
 > **SYNTHETIC DATA — FOR DEMONSTRATION ONLY.** Every exposure in
 > `portfolio.csv` is machine-generated. Nothing here represents a real
 > counterparty, loan, or institution. The regulatory values in `floors.yaml` are
-> working notes marked `verified: false` and must not be relied on. Do not use
+> working notes marked `verified: true`. Do not use
 > this data or its outputs for any real capital, reporting, or credit decision.
 
 ## How it is produced
