@@ -64,6 +64,26 @@ PYTHONPATH=src python data/generate_portfolio.py
 PYTHONPATH=src python scripts/compute_ground_truth.py
 ```
 
+### Two stages, two responsibilities
+
+The two scripts are deliberately separate — one authors the data, the other
+grades it independently:
+
+| | `generate_portfolio.py` | `compute_ground_truth.py` |
+|---|---|---|
+| Role | author the exam | write the answer key |
+| Reads | `floors.yaml` + seed | `portfolio.csv` + `floors.yaml` |
+| Writes | `portfolio.csv` | `ground_truth.yaml` |
+| Does | draws per-exposure **PD, LGD, EAD** (+ maturity, sector, collateral …) and plants known breaches | **checks floors** (`value < floor` → breach) and **computes RWA** before/after floors |
+| Randomness | yes (seeded) | none — pure deduction |
+
+The floor from `floors.yaml` appears in both, doing opposite jobs: the generator
+uses it to *position* each drawn value (baseline above it, planted breaches
+below it); the grader uses the same number to *judge* each value and to compute
+`rwa_after`. The generator knows where it planted issues by construction; the
+grader rediscovers them from scratch. When the two agree (and the tests assert
+they do), the ground truth is trustworthy.
+
 ## What the data contains
 
 ~500 exposures across five IRB classes (corporate, corporate SME, retail
