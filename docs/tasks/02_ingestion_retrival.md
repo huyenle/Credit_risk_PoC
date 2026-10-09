@@ -14,8 +14,7 @@ in Task 03 (`search_regulation`, `get_article`).
 
 ## Inputs (downloaded manually by me — do NOT scrape or download)
 ```
-data/regulations/crr.pdf
-data/regulations/crr3.pdf
+data/regulations/CRR_Consolidated.html
 data/regulations/EBA_GL_2017_16.pdf
 data/regulations/EBA_Guide_Internal_Model.pdf
 data/regulations/sources.yaml          # file, retrieved_on, url

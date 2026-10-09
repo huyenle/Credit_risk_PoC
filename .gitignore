@@ -18,3 +18,4 @@ REVIEW_NOTES.md
 .ruff_cache/
 .mypy_cache/
 .DS_Store
+.vscode/settings.json
