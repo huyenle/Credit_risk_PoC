@@ -1,0 +1,26 @@
+# Scope of the CRR IRB chapter (Part Three, Title II, Chapter 3) in the
+# consolidated text used for ingestion. HUMAN-MAINTAINED single source of truth
+# for which articles exist. The CRR parser and the Step 7 acceptance test read
+# article scope ONLY from here; nothing is hard-coded in Python.
+#
+# Expected parsed article ids == range(first..last) - repealed + inserted.
+
+consolidation_date: 2025-01-01
+
+range:
+  first: 142
+  last: 191
+
+# In-range articles absent from the consolidated text (repealed).
+# get_by_ref() returns an explicit "repealed" result for these, not an empty list.
+repealed:
+  - "155"
+  - "165"
+  - "167"
+  - "186"
+  - "187"
+  - "188"
+
+# Lettered articles inserted into the chapter and present in the text.
+inserted:
+  - "159a"

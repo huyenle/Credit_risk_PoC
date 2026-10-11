@@ -97,6 +97,63 @@ planted-issue table.
 per planted issue, the affected `exposure_id`s and the RWA impact before/after
 floors, plus RWA totals by exposure class and by sector.
 
+## Document ingestion & retrieval (Step 2)
+
+Turns the regulatory sources in `data/regulations/` into clean, citable chunks
+and retrieves them. No LLM in this step.
+
+### What each module does
+
+| module | responsibility |
+|---|---|
+| `ingest/loader.py` | read a raw source; fail loudly if it is still a Git-LFS pointer |
+| `ingest/scope.py` | read `crr_article_scope.yaml` → the exact set of CRR articles expected |
+| `ingest/schema.py` | `Chunk` dataclass + deterministic JSONL (SHA-256 id, sorted keys) |
+| `ingest/crossrefs.py` | provision text → normalised refs, e.g. `["CRR Art. 153"]` |
+| `ingest/crr.py` | parse `CRR_Consolidated.html` (Arts. 142–191) → chunks |
+| `ingest/eba_gl.py` | parse `EBA_GL_2017_16.pdf` (numbered paragraphs) → chunks |
+| `ingest/build.py` | run all parsers → `data/processed/chunks.jsonl` (CLI) |
+| `retrieval/bm25.py` | lexical BM25 index over chunk text |
+| `retrieval/dense.py` | embedding index (bge-small + FAISS), embeddings cached to disk |
+| `retrieval/lookup.py` | exact `get_by_ref`; returns a "repealed" sentinel for repealed articles |
+| `retrieval/hybrid.py` | `Retriever`: RRF fusion of BM25 + dense, plus lookup — the public API |
+
+`data/regulations/crr_article_scope.yaml` is human-maintained and is the single
+source of truth for which CRR articles exist (range − repealed + inserted).
+
+### What depends on what
+
+```
+loader ─┐
+scope  ─┤                       crossrefs
+schema ─┴──► crr.py / eba_gl.py ────┘
+                    │
+                build.py ──► data/processed/chunks.jsonl
+                    │
+        ┌───────────┼────────────┐
+     bm25.py     dense.py     lookup.py
+        └───────────┼────────────┘
+              retrieval.Retriever  ◄── scripts/eval_retrieval.py
+```
+
+`schema.Chunk` is the single data type passed between every module. `loader` and
+`scope` are leaves; `crossrefs` is a pure text→refs helper reused by both parsers.
+Public retrieval API: `Retriever.search(query, source=None, k=5)` and
+`Retriever.get_by_ref(ref)`.
+
+### Building and evaluating
+
+```bash
+# Parse all available sources -> data/processed/chunks.jsonl (deterministic)
+python -m regagent.ingest.build
+
+# Score BM25 / dense / hybrid -> docs/results/retrieval_eval.md
+python scripts/eval_retrieval.py
+```
+
+Install the extra dependencies with `pip install -e ".[dev,ingest,retrieval]"`.
+`data/processed/` (chunks, FAISS/embedding cache) is generated and gitignored.
+
 ## Running the tests
 
 ```bash

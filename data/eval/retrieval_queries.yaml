@@ -1,0 +1,16 @@
+# Retrieval evaluation queries.
+#
+# PLACEHOLDER FILE — contains 2 example items only. The real ~15-item evaluation
+# set is written by the human (Task 02 Step 6); do not treat these as the real
+# queries. Each item is a natural-language query plus the reference(s) that a
+# correct retriever should surface.
+#
+# Schema:
+#   - query: "..."
+#     expected_refs: ["CRR Art. 160(1)", "EBA GL 2017/16 para 36", ...]
+
+- query: "minimum PD input floor for corporate exposures"
+  expected_refs: ["CRR Art. 160(1)"]
+
+- query: "scope of application of the IRB approach for PD and LGD estimation"
+  expected_refs: ["EBA GL 2017/16 para 6"]
